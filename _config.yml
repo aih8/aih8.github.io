@@ -6,7 +6,7 @@
 title: 随缘补刀
 subtitle: 随缘补刀 个人博客：随便写写...
 description: write something here ...
-keywords: 
+keywords:
 author: 随缘补刀
 language: zh-Hans
 timezone: Asia/Shanghai
@@ -26,25 +26,24 @@ archive_dir: archives
 category_dir: categories
 code_dir: downloads/code
 i18n_dir: :lang
-skip_render:
-  - outlet/*
+skip_render: ["outlet/**"]
 
 # Writing
 new_post_name: :title.md # File name of new posts
 default_layout: post
 titlecase: false # Transform title into titlecase
-external_link: true # Open external links in new tab
+#external_link: true # Open external links in new tab
 filename_case: 0
 render_drafts: false
 post_asset_folder: false
 relative_link: false
 future: true
 highlight:
-  enable: true
+  enable: false
   line_number: true
   auto_detect: false
   tab_replace:
-  
+
 # Home page setting
 # path: Root path for your blogs index page. (default = '')
 # per_page: Posts displayed per page. (0 = disable pagination)
@@ -53,7 +52,7 @@ index_generator:
   path: ''
   per_page: 10
   order_by: -date
-  
+
 # Category & Tag
 default_category: uncategorized
 category_map:
