@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.ihoo.eu.org","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="react props.children 探索总结props.children的数据类型包括:  undefined string object (ReactElement) function array: (string|ReactElement|function)[]  undefindimport React from &quot;react&quot;;  class Child exte">
+<meta property="og:type" content="article">
+<meta property="og:title" content="react props.children 探索">
+<meta property="og:url" content="https://www.ihoo.eu.org/2021/07/09/react%20props.children%20%E6%8E%A2%E7%B4%A2/index.html">
+<meta property="og:site_name" content="随缘补刀">
+<meta property="og:description" content="react props.children 探索总结props.children的数据类型包括:  undefined string object (ReactElement) function array: (string|ReactElement|function)[]  undefindimport React from &quot;react&quot;;  class Child exte">
+<meta property="og:locale">
+<meta property="article:published_time" content="2021-07-09T13:19:01.000Z">
+<meta property="article:modified_time" content="2024-10-25T01:21:22.488Z">
+<meta property="article:author" content="随缘补刀">
+<meta property="article:tag" content="React">
+<meta property="article:tag" content="props.children">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.ihoo.eu.org/2021/07/09/react%20props.children%20%E6%8E%A2%E7%B4%A2/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"https://www.ihoo.eu.org/2021/07/09/react%20props.children%20%E6%8E%A2%E7%B4%A2/","path":"2021/07/09/react props.children 探索/","title":"react props.children 探索"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>react props.children 探索 | 随缘补刀</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">随缘补刀</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">随缘补刀 个人博客：随便写写...</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section">Home</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section">Tags</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section">Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#react-props-children-%E6%8E%A2%E7%B4%A2"><span class="nav-number">1.</span> <span class="nav-text">react props.children 探索</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.0.0.1.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefind"><span class="nav-number">1.0.1.</span> <span class="nav-text">undefind</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#string"><span class="nav-number">1.0.2.</span> <span class="nav-text">string</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#object"><span class="nav-number">1.0.3.</span> <span class="nav-text">object</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#function"><span class="nav-number">1.0.4.</span> <span class="nav-text">function</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#array"><span class="nav-number">1.0.5.</span> <span class="nav-text">array</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="随缘补刀"
+      src="https://cdn13.mudu.tv/assets/upload/editor/156956940814741.png">
+  <p class="site-author-name" itemprop="name">随缘补刀</p>
+  <div class="site-description" itemprop="description">write something here ...</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://www.ihoo.eu.org/2021/07/09/react%20props.children%20%E6%8E%A2%E7%B4%A2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn13.mudu.tv/assets/upload/editor/156956940814741.png">
+      <meta itemprop="name" content="随缘补刀">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="随缘补刀">
+      <meta itemprop="description" content="write something here ...">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="react props.children 探索 | 随缘补刀">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          react props.children 探索
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-07-09 21:19:01" itemprop="dateCreated datePublished" datetime="2021-07-09T21:19:01+08:00">2021-07-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-10-25 09:21:22" itemprop="dateModified" datetime="2024-10-25T09:21:22+08:00">2024-10-25</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="react-props-children-探索"><a href="#react-props-children-探索" class="headerlink" title="react props.children 探索"></a>react props.children 探索</h1><h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>props.children的数据类型包括:</p>
+<ul>
+<li>undefined</li>
+<li>string</li>
+<li>object (ReactElement)</li>
+<li>function</li>
+<li>array: (string|ReactElement|function)[]</li>
+</ul>
+<h3 id="undefind"><a href="#undefind" class="headerlink" title="undefind"></a>undefind</h3><pre><code class="javascript">import React from &quot;react&quot;;
+
+class Child extends React.Component &#123;
+  render() &#123;
+    const &#123; children &#125; = this.props;
+    console.log(&quot;children: &quot;, typeof children, children); // children:  &#39;undefined&#39; undefined
+    return &lt;div className=&quot;child&quot;&gt;&#123;children&#125;&lt;/div&gt;;
+  &#125;
+&#125;
+
+export default function App() &#123;
+  return (
+    &lt;div&gt;
+      &lt;Child&gt;&lt;/Child&gt;
+    &lt;/div&gt;
+  );
+&#125;
+</code></pre>
+<h3 id="string"><a href="#string" class="headerlink" title="string"></a>string</h3><pre><code class="javascript">import React from &quot;react&quot;;
+
+class Child extends React.Component &#123;
+  render() &#123;
+    const &#123; children &#125; = this.props;
+    console.log(&quot;children: &quot;, typeof children, children); // children:  &#39;string&#39; 131231
+    return &lt;div className=&quot;child&quot;&gt;&#123;children&#125;&lt;/div&gt;;
+  &#125;
+&#125;
+
+export default function App() &#123;
+  return (
+    &lt;div&gt;
+      &lt;Child&gt;131231&lt;/Child&gt;
+    &lt;/div&gt;
+  );
+&#125;
+</code></pre>
+<h3 id="object"><a href="#object" class="headerlink" title="object"></a>object</h3><pre><code class="javascript">import React from &quot;react&quot;;
+
+class Child extends React.Component &#123;
+  render() &#123;
+    const &#123; children &#125; = this.props;
+    console.log(&quot;children: &quot;, typeof children, children); // children:  &#39;object&#39;  &#123;$$typeof: Symbol(react.element), key: null, ref: null, props: &#123;…&#125;, type: ƒ, …&#125;
+    return &lt;div className=&quot;child&quot;&gt;&#123;children&#125;&lt;/div&gt;;
+  &#125;
+&#125;
+
+function Doll() &#123;
+  return &lt;div&gt;This is a doll;&lt;/div&gt;;
+&#125;
+
+export default function App() &#123;
+  return (
+    &lt;div&gt;
+      &lt;Child&gt;
+        &lt;Doll/&gt;
+      &lt;/Child&gt;
+    &lt;/div&gt;
+  );
+&#125;
+</code></pre>
+<h3 id="function"><a href="#function" class="headerlink" title="function"></a>function</h3><pre><code class="javascript">import React from &quot;react&quot;;
+
+class Child extends React.Component &#123;
+  render() &#123;
+    const &#123; children, name &#125; = this.props;
+    console.log(&quot;children: &quot;, typeof children, children); // children:  &#39;function&#39; arg1 =&gt; &#123; return &quot;hello &quot; + arg1; &#125;
+    return &lt;div className=&quot;child&quot;&gt;&#123;children(name)&#125;&lt;/div&gt;;
+  &#125;
+&#125;
+
+export default function App() &#123;
+  return (
+    &lt;div&gt;
+      &lt;Child name=&quot;Tom&quot;&gt;
+        &#123;(arg1) =&gt; &#123;
+          return &quot;hello &quot; + arg1;
+        &#125;&#125;
+      &lt;/Child&gt;
+    &lt;/div&gt;
+  );
+&#125;
+</code></pre>
+<h3 id="array"><a href="#array" class="headerlink" title="array"></a>array</h3><pre><code class="javascript">import React from &quot;react&quot;;
+console.log(React);
+
+class Child extends React.Component &#123;
+  render() &#123;
+    const &#123; children, name &#125; = this.props;
+    console.log(
+      &quot;children: &quot;,
+      typeof children, // &#39;object&#39;
+      children instanceof Array, // true
+      children // [ƒ, &quot;This is a Text;&quot;, &#123;…&#125;]
+    );
+    return (
+      &lt;div className=&quot;child&quot;&gt;
+        &#123;children[0](name)&#125;
+        &lt;br/&gt;
+        &#123;React.Children.map(children, (v, i) =&gt; &#123;
+          console.log(&#39;---&gt;&#39;, typeof v, v, i); // 这里需要注意,React.Children.map函数会先过滤掉数组中的function类型数据
+          if (typeof v === &quot;function&quot;) &#123;
+            return v(name);
+          &#125; else &#123;
+            return v;
+          &#125;
+        &#125;)&#125;
+      &lt;/div&gt;
+    );
+  &#125;
+&#125;
+
+function Doll() &#123;
+  return &lt;div&gt;This is a doll;&lt;/div&gt;;
+&#125;
+
+export default function App() &#123;
+  return (
+    &lt;div&gt;
+      &lt;Child name=&quot;Tom&quot;&gt;
+        &#123;(arg1) =&gt; &#123;
+          return &quot;hello &quot; + arg1;
+        &#125;&#125;
+        This is a Text;
+        &lt;Doll /&gt;
+      &lt;/Child&gt;
+    &lt;/div&gt;
+  );
+&#125;
+</code></pre>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/React/" rel="tag"># React</a>
+              <a href="/tags/props-children/" rel="tag"># props.children</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/07/08/defineProperty%E5%92%8CProxy%E6%AF%94%E8%BE%83/" rel="prev" title="Proxy 和 defineProperty 的比较">
+                  <i class="fa fa-chevron-left"></i> Proxy 和 defineProperty 的比较
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/07/09/React%20%E7%88%B6%E5%AD%90%E7%BB%84%E4%BB%B6%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E8%A7%A6%E5%8F%91%E9%A1%BA%E5%BA%8F/" rel="next" title="React 父子组件生命周期触发顺序">
+                  React 父子组件生命周期触发顺序 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">随缘补刀</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

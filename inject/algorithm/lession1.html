@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.ihoo.eu.org","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="* {     padding: 0;     margin: 0;   }   body {     min-width: 680px;   }   #wrap {     width: 600px;     height: 600px;     position: relative;     margin: 60px auto;     background-color: #f2f2f2">
+<meta property="og:type" content="website">
+<meta property="og:title" content="网页版扫雷">
+<meta property="og:url" content="https://www.ihoo.eu.org/inject/algorithm/lession1.html">
+<meta property="og:site_name" content="随缘补刀">
+<meta property="og:description" content="* {     padding: 0;     margin: 0;   }   body {     min-width: 680px;   }   #wrap {     width: 600px;     height: 600px;     position: relative;     margin: 60px auto;     background-color: #f2f2f2">
+<meta property="og:locale">
+<meta property="article:published_time" content="2019-09-27T16:29:39.000Z">
+<meta property="article:modified_time" content="2024-10-25T01:21:22.488Z">
+<meta property="article:author" content="随缘补刀">
+<meta property="article:tag" content="js">
+<meta property="article:tag" content="扫雷">
+<meta property="article:tag" content="网页版">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.ihoo.eu.org/inject/algorithm/lession1">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"zh-Hans","comments":true,"permalink":"https://www.ihoo.eu.org/inject/algorithm/lession1.html","path":"inject/algorithm/lession1.html","title":"网页版扫雷"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>网页版扫雷 | 随缘补刀
+</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">随缘补刀</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">随缘补刀 个人博客：随便写写...</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section">Home</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section">Tags</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section">Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="随缘补刀"
+      src="https://cdn13.mudu.tv/assets/upload/editor/156956940814741.png">
+  <p class="site-author-name" itemprop="name">随缘补刀</p>
+  <div class="site-description" itemprop="description">write something here ...</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner page posts-expand">
+
+
+    
+    
+    
+    <div class="post-block" lang="zh-Hans"><header class="post-header">
+
+<h1 class="post-title" itemprop="name headline">网页版扫雷
+</h1>
+
+<div class="post-meta-container">
+  <ul class="breadcrumb">
+            <li><a href="/inject/">INJECT</a></li>
+            <li><a href="/inject/algorithm/">ALGORITHM</a></li>
+            <li>LESSION1</li>
+  </ul>
+</div>
+
+</header>
+
+      
+      
+      <div class="post-body">
+          <style lang="en">
+  * {
+    padding: 0;
+    margin: 0;
+  }
+  body {
+    min-width: 680px;
+  }
+  #wrap {
+    width: 600px;
+    height: 600px;
+    position: relative;
+    margin: 60px auto;
+    background-color: #f2f2f2;
+    box-shadow: 0 0 10px 1px rgba(0,0,0,.1);
+    font-size: 0;
+    border: 1px solid #ddd;
+  }
+  #wrap > div {
+    display: inline-block;
+    width: 60px;
+    height: 60px;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    font-size: 12px;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+
+  #wrap .red {
+    color: red;
+  }
+  h2 {
+    text-align: center;
+  }
+
+  #forRight {
+    position: fixed;
+    display: none;
+    left: 10%;
+    top: 10%;
+    background-color: #fafafa;
+    border-radius: 2px;
+    width: 90px;
+    overflow: hidden;
+    box-shadow: 0 0 10px 2px rgba(0,0,0,.1);
+  }
+
+  #forRight ul li {
+    list-style: none;
+    padding-left: 8px;
+    cursor: pointer;
+    transition: color 0.2s;
+    user-select: none;
+  }
+
+  #forRight ul li:hover {
+    color: #777;
+  }
+
+  #forRight ul li + li {
+    border-top: 1px solid #eee;
+  }
+
+  .uncovered {
+    background-color: #ccc;
+  }
+</style>
+<!-- <div>
+    <input id="numberNode" type="number" placeholder="input count per row">
+    <button onclick="changeCountPerRow()">changeCountPerRow</button>
+</div> -->
+<div id="wrap"></div>
+<div id="forRight">
+  <ul>
+    <li id="setFlagTrue" >插旗子</li>
+    <li id="setFlagFalse" >取消旗子</li>
+  </ul>
+</div>
+<script src="https://libs.baidu.com/jquery/1.9.0/jquery.js"></script>
+<script>
+  $(function() {
+    console.log('----------->');
+    var forRight = document.getElementById('forRight');
+    $('#wrap').on('contextmenu', function(e) {
+
+      var index = $(e.target).index();
+      console.log(this,index);
+      //显示菜单
+      forRight.style.display = "block";
+      //菜单定位
+      forRight.style.left = e.pageX + "px";
+      forRight.style.top = e.pageY + "px";
+      $(forRight).attr('index', index);
+      //return false为了屏蔽默认事件
+      return false;
+    })
+
+    $(document).on('click', function () {
+      forRight.style.display = 'none';
+    });
+  })
+
+
+</script>
+<script>
+  function changeCountPerRow() {
+    var numberNode = document.getElementById('numberNode');
+    var value = numberNode.value;
+    if (!value) {
+      return;
+    } else if (+value !== parseInt(value)) {
+      alert('please input a int number');
+      return;
+    } else if (+value < 10) {
+      alert('number should larger than 10');
+      return;
+    } else if (+value > 40) {
+      alert('number should smaller than 40');
+      return;
+    }
+    changeUrlParams(value);
+  }
+
+  function changeUrlParams(
+    countPerRow = getQueryParam('countPerRow'),
+    rate = getQueryParam('rate')
+  ) {
+    window.location.href = '?countPerRow=' + countPerRow + '&rate=' + rate;
+  }
+</script>
+<script>
+  var countPerRow = setCountPerRow();
+  var rate = setRate();
+
+  function setRate() {
+    var defaultRate = 0.1;
+    var queryRate = +getQueryParam('rate');
+    if (!rate) {
+      rate = 0.1;
+    } else if (rate < 0.1) {
+      rate = 0.1;
+    } else if (rate > 0.9) {
+      rate = 0.9;
+    }
+    return rate;
+  }
+
+  function setCountPerRow() {
+    var defaultCount = 25;
+    var queryCount = +getQueryParam('countPerRow');
+    if (!queryCount) {
+      queryCount = defaultCount;
+    } else if (queryCount < 10) {
+      queryCount = 10;
+    } else if (queryCount > 40) {
+      queryCount = 40;
+    }
+    return queryCount;
+  }
+
+  (function($) {
+    var fragment = document.createDocumentFragment();
+    var maxCount = Math.pow(countPerRow, 2);
+    var wrap = $('#wrap');
+    var wrapWidth = wrap.width();
+    var aroundDifArr = [
+      [ -1, -1], [-1, 0], [-1, 1],
+      [0, -1], [0, 1],
+      [1, -1], [1, 0], [1, 1]
+    ];
+    var stateArr = [];
+
+    var eachNodeWidthAndHeight = (wrapWidth / countPerRow);
+
+    do {
+      var node = document.createElement('div');
+      node.style.width = eachNodeWidthAndHeight  + 'px';
+      node.style.height = eachNodeWidthAndHeight + 'px';
+      node.style.lineHeight = eachNodeWidthAndHeight - 2 + 'px';
+      fragment.appendChild(node);
+      maxCount--;
+      stateArr.push({
+        isCover: true,
+        isBoom: getRandomState(rate),
+        flag: false,
+      });
+    } while (maxCount !== 0)
+
+    wrap.append(fragment);
+
+    wrap.on('click', function(e) {
+      if (e.target.parentNode !== this) {
+        return
+      }
+
+      var index = $(e.target).index();
+      var state = stateArr[index];
+      if (state.flag || !state.isCover) {
+        return
+      }
+      console.log('the index of cliked div is :', index, state);
+
+      uncoverNode(index);
+      checkWin();
+    });
+
+    $('#setFlagTrue').on('click', () => setFlagStatus(true));
+    $('#setFlagFalse').on('click', () => setFlagStatus(false));
+    function setFlagStatus(nextStatus) {
+      $('#forRight').hide();
+      var index = +$('#forRight').attr('index');
+      var state = stateArr[index];
+      if (state.flag === nextStatus || !state.isCover) {
+        return
+      }
+      console.log('click', nextStatus)
+      var target = $('#wrap').children().eq(index);
+      if (nextStatus) {
+        target.html('*').addClass('red');
+      } else {
+        target.html('').removeClass('red');
+      }
+      state.flag = nextStatus;
+    }
+
+    function checkWin() {
+      var coverArr = stateArr.filter(function(v) {
+        return v.isCover;
+      });
+      var coverBoomArr = coverArr.filter(function(v) {
+        return v.isBoom;
+      });
+      if (coverArr.length === coverBoomArr.length) {
+        setTimeout(function() {
+          alert('YOU WIN!!!');
+          window.location.reload();
+        }, 0);
+      }
+    }
+
+    function uncoverNode(index) {
+      // 处理当前模块
+      var state = stateArr[index];
+      if (!state.isCover) {
+        return;
+      }
+
+      state.isCover = false;
+      var target = wrap.children().eq(index).get(0);
+      if (state.isBoom) {
+        target.innerText = '炸弹';
+        setTimeout(function() {
+          alert('YOU LOSE!!!');
+          window.location.reload();
+        }, 0);
+        return;
+      } else {
+        const aroundCoverBoomCount = getAroundCoverBoomCount(index);
+        if (aroundCoverBoomCount === 0) {
+          uncoverAround(index);
+        } else {
+          target.innerText = aroundCoverBoomCount;
+        }
+      }
+      target = null;
+    }
+
+    function uncoverItem(index, count) {
+      var target = wrap.children().eq(index).get(0);
+      target.innerText = count || ' ';
+      target.className += 'uncovered';
+      stateArr[index].isCover = false;
+    }
+
+    function uncoverAround(index) {
+      uncoverItem(index);
+      var x = Math.floor(index / countPerRow);
+      var y = index % countPerRow;
+      for (let i = 0; i < aroundDifArr.length; i++) {
+        var item = aroundDifArr[i];
+        var x_dif = item[0];
+        var y_dif = item[1];
+
+        var next_x = x + x_dif;
+        var next_y = y + y_dif;
+        if (isCodrValid(next_x, next_y)) {
+          var next_index = next_x * countPerRow + next_y;
+          var state = stateArr[next_index];
+          if (state.isCover && !state.isBoom) {
+            var aroundCoverBoomCount = getAroundCoverBoomCount(next_index);
+            if (aroundCoverBoomCount === 0) {
+              uncoverAround(next_index);
+            } else {
+              uncoverItem(next_index, aroundCoverBoomCount);
+            }
+          }
+        }
+      }
+    }
+
+    function getAroundCoverBoomCount(index) {
+      var c = 0;
+      var x = Math.floor(index / countPerRow);
+      var y = index % countPerRow;
+      for (let i = 0; i < aroundDifArr.length; i++) {
+        var item = aroundDifArr[i];
+        var x_dif = item[0];
+        var y_dif = item[1];
+
+        var next_x = x + x_dif;
+        var next_y = y + y_dif;
+        if (isCodrValid(next_x, next_y)) {
+          var next_index = next_x * countPerRow + next_y;
+          var state = stateArr[next_index];
+          if (state.isBoom) {
+            c++;
+          }
+        }
+      }
+      return c;
+    }
+
+    function isCodrValid(x, y) {
+      return (x >= 0) && (x < countPerRow) && (y >= 0) && (y < countPerRow);
+    }
+
+
+  })(jQuery)
+
+  function getRandomState(rateToBeFalsy) {
+    return Math.random() < rateToBeFalsy;
+  }
+
+  function getQueryParam(param) {
+    var search = window.location.search;
+    if (search && search.indexOf('?') === 0) {
+      search = search.substr(1);
+    }
+    return new URLSearchParams(search).get(param);
+  }
+</script>
+
+      </div>
+      
+      
+      
+    </div>
+  <ul class="breadcrumb">
+            <li><a href="/inject/">INJECT</a></li>
+            <li><a href="/inject/algorithm/">ALGORITHM</a></li>
+            <li>LESSION1</li>
+  </ul>
+
+    
+    
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">随缘补刀</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.ihoo.eu.org","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Proxy 和 defineProperty 的比较可拦截属性的比较   属性 defineProperty Proxy 描述    get 支持 支持 (target, propKey, receiver)拦截对象属性的读取，比如 proxy.foo 和proxy[‘foo’]。   set 支持 支持 (target, propKey, value, receiver)拦截对象属性的设置，比如">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Proxy 和 defineProperty 的比较">
+<meta property="og:url" content="https://www.ihoo.eu.org/2021/07/08/defineProperty%E5%92%8CProxy%E6%AF%94%E8%BE%83/index.html">
+<meta property="og:site_name" content="随缘补刀">
+<meta property="og:description" content="Proxy 和 defineProperty 的比较可拦截属性的比较   属性 defineProperty Proxy 描述    get 支持 支持 (target, propKey, receiver)拦截对象属性的读取，比如 proxy.foo 和proxy[‘foo’]。   set 支持 支持 (target, propKey, value, receiver)拦截对象属性的设置，比如">
+<meta property="og:locale">
+<meta property="article:published_time" content="2021-07-08T13:19:01.000Z">
+<meta property="article:modified_time" content="2024-10-25T01:21:22.488Z">
+<meta property="article:author" content="随缘补刀">
+<meta property="article:tag" content="Vue">
+<meta property="article:tag" content="Proxy">
+<meta property="article:tag" content="defineProperty">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.ihoo.eu.org/2021/07/08/defineProperty%E5%92%8CProxy%E6%AF%94%E8%BE%83/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-Hans","comments":true,"permalink":"https://www.ihoo.eu.org/2021/07/08/defineProperty%E5%92%8CProxy%E6%AF%94%E8%BE%83/","path":"2021/07/08/defineProperty和Proxy比较/","title":"Proxy 和 defineProperty 的比较"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Proxy 和 defineProperty 的比较 | 随缘补刀</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">随缘补刀</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">随缘补刀 个人博客：随便写写...</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section">Home</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section">Tags</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section">Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Proxy-%E5%92%8C-defineProperty-%E7%9A%84%E6%AF%94%E8%BE%83"><span class="nav-number">1.</span> <span class="nav-text">Proxy 和 defineProperty 的比较</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E6%8B%A6%E6%88%AA%E5%B1%9E%E6%80%A7%E7%9A%84%E6%AF%94%E8%BE%83"><span class="nav-number">1.1.</span> <span class="nav-text">可拦截属性的比较</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93"><span class="nav-number"></span> <span class="nav-text">使用总结</span></a></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="随缘补刀"
+      src="https://cdn13.mudu.tv/assets/upload/editor/156956940814741.png">
+  <p class="site-author-name" itemprop="name">随缘补刀</p>
+  <div class="site-description" itemprop="description">write something here ...</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://www.ihoo.eu.org/2021/07/08/defineProperty%E5%92%8CProxy%E6%AF%94%E8%BE%83/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://cdn13.mudu.tv/assets/upload/editor/156956940814741.png">
+      <meta itemprop="name" content="随缘补刀">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="随缘补刀">
+      <meta itemprop="description" content="write something here ...">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Proxy 和 defineProperty 的比较 | 随缘补刀">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Proxy 和 defineProperty 的比较
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-07-08 21:19:01" itemprop="dateCreated datePublished" datetime="2021-07-08T21:19:01+08:00">2021-07-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-10-25 09:21:22" itemprop="dateModified" datetime="2024-10-25T09:21:22+08:00">2024-10-25</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="Proxy-和-defineProperty-的比较"><a href="#Proxy-和-defineProperty-的比较" class="headerlink" title="Proxy 和 defineProperty 的比较"></a>Proxy 和 defineProperty 的比较</h2><h3 id="可拦截属性的比较"><a href="#可拦截属性的比较" class="headerlink" title="可拦截属性的比较"></a>可拦截属性的比较</h3><table>
+<thead>
+<tr>
+<th>属性</th>
+<th>defineProperty</th>
+<th>Proxy</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>get</td>
+<td>支持</td>
+<td>支持</td>
+<td>(target, propKey, receiver)<br/>拦截对象属性的读取，比如 proxy.foo 和proxy[‘foo’]。</td>
+</tr>
+<tr>
+<td>set</td>
+<td>支持</td>
+<td>支持</td>
+<td>(target, propKey, value, receiver)<br/>拦截对象属性的设置，比如proxy.foo &#x3D; v 或 proxy[‘foo’] &#x3D; v，返回一个布尔值。</td>
+</tr>
+<tr>
+<td>has</td>
+<td>不支持</td>
+<td>支持</td>
+<td>(target, propKey)<br/>拦截 propKey in proxy 的操作，返回一个布尔值。</td>
+</tr>
+<tr>
+<td>deleteProperty</td>
+<td>不支持</td>
+<td>支持</td>
+<td>(target, propKey)<br/>拦截 delete proxy[propKey] 的操作，返回一个布尔值。</td>
+</tr>
+<tr>
+<td>ownKeys</td>
+<td>不支持</td>
+<td>支持</td>
+<td>(target)<br/>拦截Object.getOwnPropertyNames(proxy)、Object.getOwnPropertySymbols(proxy)、Object.keys(proxy)、for…in循环，返回一个数组。该方法返回目标对象所有自身的属性的属性名，而 Object.keys() 的返回结果仅包括目标对象自身的可遍历属性。</td>
+</tr>
+<tr>
+<td>getOwnPropertyDescriptor</td>
+<td>不支持</td>
+<td>支持</td>
+<td>(target, propKey)<br/>拦截Object.getOwnPropertyDescriptor(proxy, propKey)，返回属性的描述对象。</td>
+</tr>
+<tr>
+<td>defineProperty</td>
+<td>不支持</td>
+<td>支持</td>
+<td>(target, propKey, propDesc)<br/>拦截Object.defineProperty(proxy, propKey, propDesc）、Object.defineProperties(proxy, propDescs)，返回一个布尔值。</td>
+</tr>
+<tr>
+<td>preventExtensions</td>
+<td>不支持</td>
+<td>支持</td>
+<td>(target)<br/>拦截 Object.preventExtensions(proxy)，返回一个布尔值。</td>
+</tr>
+<tr>
+<td>getPrototypeOf</td>
+<td>不支持</td>
+<td>支持</td>
+<td>(target)<br/>拦截 Object.getPrototypeOf(proxy)，返回一个对象。</td>
+</tr>
+<tr>
+<td>isExtensible</td>
+<td>不支持</td>
+<td>支持</td>
+<td>(target)<br/>拦截 Object.isExtensible(proxy)，返回一个布尔值。</td>
+</tr>
+<tr>
+<td>setPrototypeOf</td>
+<td>不支持</td>
+<td>支持</td>
+<td>(target, proto)<br/>拦截 Object.setPrototypeOf(proxy, proto)，返回一个布尔值。如果目标对象是函数，那么还有两种额外操作可以拦截。</td>
+</tr>
+<tr>
+<td>apply</td>
+<td>不支持</td>
+<td>支持</td>
+<td>(target, object, args)<br/>拦截 Proxy 实例作为函数调用的操作，比如proxy(…args)、proxy.call(object, …args)、proxy.apply(…)。</td>
+</tr>
+<tr>
+<td>construct</td>
+<td>不支持</td>
+<td>支持</td>
+<td>(target, args)<br/>拦截 Proxy 实例作为构造函数调用的操作，比如new proxy(…args)。</td>
+</tr>
+</tbody></table>
+<br />
+## 兼容性的比较
+<style type="text/css">
+    .bc-table-web .bc-browser-name, .bc-table-web .bc-level-yes, .bc-table-web .bc-level-no, .bc-history-link, abbr.only-icon {
+        display: none
+    }
+    .bc-supports-yes {
+        background-color: #ebf8e1;
+    }
+    .bc-supports-no {
+        background-color: #ffbdbd;
+    }
+</style>
+### proxy的兼容性如下
+<table class="bc-table bc-table-web"><thead><tr class="bc-platforms"><td></td><th class="bc-platform-desktop" colspan="6"><span>desktop</span></th><th class="bc-platform-mobile" colspan="6"><span>mobile</span></th><th class="bc-platform-server" colspan="1"><span>server</span></th></tr><tr class="bc-browsers"><td></td><th class="bc-browser-chrome"><span class="bc-head-txt-label bc-head-icon-chrome">Chrome</span></th><th class="bc-browser-edge"><span class="bc-head-txt-label bc-head-icon-edge">Edge</span></th><th class="bc-browser-firefox"><span class="bc-head-txt-label bc-head-icon-firefox">Firefox</span></th><th class="bc-browser-ie"><span class="bc-head-txt-label bc-head-icon-ie">Internet Explorer</span></th><th class="bc-browser-opera"><span class="bc-head-txt-label bc-head-icon-opera">Opera</span></th><th class="bc-browser-safari"><span class="bc-head-txt-label bc-head-icon-safari">Safari</span></th><th class="bc-browser-webview_android"><span class="bc-head-txt-label bc-head-icon-webview_android">WebView Android</span></th><th class="bc-browser-chrome_android"><span class="bc-head-txt-label bc-head-icon-chrome_android">Chrome Android</span></th><th class="bc-browser-firefox_android"><span class="bc-head-txt-label bc-head-icon-firefox_android">Firefox for Android</span></th><th class="bc-browser-opera_android"><span class="bc-head-txt-label bc-head-icon-opera_android">Opera Android</span></th><th class="bc-browser-safari_ios"><span class="bc-head-txt-label bc-head-icon-safari_ios">Safari on iOS</span></th><th class="bc-browser-samsunginternet_android"><span class="bc-head-txt-label bc-head-icon-samsunginternet_android">Samsung Internet</span></th><th class="bc-browser-nodejs"><span class="bc-head-txt-label bc-head-icon-nodejs">Node.js</span></th></tr></thead><tbody><tr><th scope="row"><div class="bc-table-row-header"><code>Proxy</code></div></th><td class="bc-browser-chrome bc-supports-yes " aria-expanded="false" title="Released 2016-03-02"><span class="bc-browser-name">Chrome</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>49<div class="bc-icons"></div></td><td class="bc-browser-edge bc-supports-yes " aria-expanded="false" title="Released 2015-07-28"><span class="bc-browser-name">Edge</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>12<div class="bc-icons"></div></td><td class="bc-browser-firefox bc-supports-yes " aria-expanded="false" title="Released 2013-01-08"><span class="bc-browser-name">Firefox</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>18<div class="bc-icons"></div></td><td class="bc-browser-ie bc-supports-no " aria-expanded="false"><span class="bc-browser-name">Internet Explorer</span><abbr class="bc-level-no only-icon" title="No support"><span>No support</span></abbr>No<div class="bc-icons"></div></td><td class="bc-browser-opera bc-supports-yes " aria-expanded="false" title="Released 2016-03-15"><span class="bc-browser-name">Opera</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>36<div class="bc-icons"></div></td><td class="bc-browser-safari bc-supports-yes " aria-expanded="false" title="Released 2016-09-20"><span class="bc-browser-name">Safari</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>10<div class="bc-icons"></div></td><td class="bc-browser-webview_android bc-supports-yes " aria-expanded="false" title="Released 2016-03-09"><span class="bc-browser-name">WebView Android</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>49<div class="bc-icons"></div></td><td class="bc-browser-chrome_android bc-supports-yes " aria-expanded="false" title="Released 2016-03-09"><span class="bc-browser-name">Chrome Android</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>49<div class="bc-icons"></div></td><td class="bc-browser-firefox_android bc-supports-yes " aria-expanded="false" title="Released 2013-01-08"><span class="bc-browser-name">Firefox for Android</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>18<div class="bc-icons"></div></td><td class="bc-browser-opera_android bc-supports-yes " aria-expanded="false" title="Released 2016-03-31"><span class="bc-browser-name">Opera Android</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>36<div class="bc-icons"></div></td><td class="bc-browser-safari_ios bc-supports-yes " aria-expanded="false" title="Released 2016-09-13"><span class="bc-browser-name">Safari on iOS</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>10<div class="bc-icons"></div></td><td class="bc-browser-samsunginternet_android bc-supports-yes " aria-expanded="false" title="Released 2016-12-15"><span class="bc-browser-name">Samsung Internet</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>5.0<div class="bc-icons"></div></td><td class="bc-browser-nodejs bc-supports-yes " aria-expanded="false" title="Released 2016-04-26"><span class="bc-browser-name">Node.js</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>6.0.0<div class="bc-icons"></div></td></tr><tr><th scope="row"><a href="/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy/Proxy" class="bc-table-row-header"><span><code>Proxy()</code> constructor</span></a></th><td class="bc-browser-chrome bc-supports-yes " aria-expanded="false" title="Released 2016-03-02"><span class="bc-browser-name">Chrome</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>49<div class="bc-icons"></div></td><td class="bc-browser-edge bc-supports-yes " aria-expanded="false" title="Released 2015-07-28"><span class="bc-browser-name">Edge</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>12<div class="bc-icons"></div></td><td class="bc-browser-firefox bc-supports-yes " aria-expanded="false" title="Released 2013-01-08"><span class="bc-browser-name">Firefox</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>18<div class="bc-icons"></div></td><td class="bc-browser-ie bc-supports-no " aria-expanded="false"><span class="bc-browser-name">Internet Explorer</span><abbr class="bc-level-no only-icon" title="No support"><span>No support</span></abbr>No<div class="bc-icons"></div></td><td class="bc-browser-opera bc-supports-yes " aria-expanded="false" title="Released 2016-03-15"><span class="bc-browser-name">Opera</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>36<div class="bc-icons"></div></td><td class="bc-browser-safari bc-supports-yes " aria-expanded="false" title="Released 2016-09-20"><span class="bc-browser-name">Safari</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>10<div class="bc-icons"></div></td><td class="bc-browser-webview_android bc-supports-yes " aria-expanded="false" title="Released 2016-03-09"><span class="bc-browser-name">WebView Android</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>49<div class="bc-icons"></div></td><td class="bc-browser-chrome_android bc-supports-yes " aria-expanded="false" title="Released 2016-03-09"><span class="bc-browser-name">Chrome Android</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>49<div class="bc-icons"></div></td><td class="bc-browser-firefox_android bc-supports-yes " aria-expanded="false" title="Released 2013-01-08"><span class="bc-browser-name">Firefox for Android</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>18<div class="bc-icons"></div></td><td class="bc-browser-opera_android bc-supports-yes " aria-expanded="false" title="Released 2016-03-31"><span class="bc-browser-name">Opera Android</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>36<div class="bc-icons"></div></td><td class="bc-browser-safari_ios bc-supports-yes " aria-expanded="false" title="Released 2016-09-13"><span class="bc-browser-name">Safari on iOS</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>10<div class="bc-icons"></div></td><td class="bc-browser-samsunginternet_android bc-supports-yes " aria-expanded="false" title="Released 2016-12-15"><span class="bc-browser-name">Samsung Internet</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>5.0<div class="bc-icons"></div></td><td class="bc-browser-nodejs bc-supports-yes " aria-expanded="false" title="Released 2016-04-26"><span class="bc-browser-name">Node.js</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>6.0.0<div class="bc-icons"></div></td></tr><tr><th scope="row"><a href="/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy/revocable" class="bc-table-row-header"><code>revocable</code></a></th><td class="bc-browser-chrome bc-supports-yes " aria-expanded="false" title="Released 2017-12-06"><span class="bc-browser-name">Chrome</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>63<div class="bc-icons"></div></td><td class="bc-browser-edge bc-supports-yes " aria-expanded="false" title="Released 2015-07-28"><span class="bc-browser-name">Edge</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>12<div class="bc-icons"></div></td><td class="bc-browser-firefox bc-supports-yes " aria-expanded="false" title="Released 2014-12-01"><span class="bc-browser-name">Firefox</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>34<div class="bc-icons"></div></td><td class="bc-browser-ie bc-supports-no " aria-expanded="false"><span class="bc-browser-name">Internet Explorer</span><abbr class="bc-level-no only-icon" title="No support"><span>No support</span></abbr>No<div class="bc-icons"></div></td><td class="bc-browser-opera bc-supports-yes " aria-expanded="false" title="Released 2018-01-04"><span class="bc-browser-name">Opera</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>50<div class="bc-icons"></div></td><td class="bc-browser-safari bc-supports-yes " aria-expanded="false" title="Released 2016-09-20"><span class="bc-browser-name">Safari</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>10<div class="bc-icons"></div></td><td class="bc-browser-webview_android bc-supports-yes " aria-expanded="false" title="Released 2017-12-05"><span class="bc-browser-name">WebView Android</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>63<div class="bc-icons"></div></td><td class="bc-browser-chrome_android bc-supports-yes " aria-expanded="false" title="Released 2017-12-05"><span class="bc-browser-name">Chrome Android</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>63<div class="bc-icons"></div></td><td class="bc-browser-firefox_android bc-supports-yes " aria-expanded="false" title="Released 2014-12-01"><span class="bc-browser-name">Firefox for Android</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>34<div class="bc-icons"></div></td><td class="bc-browser-opera_android bc-supports-yes " aria-expanded="false" title="Released 2018-05-14"><span class="bc-browser-name">Opera Android</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>46<div class="bc-icons"></div></td><td class="bc-browser-safari_ios bc-supports-yes " aria-expanded="false" title="Released 2016-09-13"><span class="bc-browser-name">Safari on iOS</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>10<div class="bc-icons"></div></td><td class="bc-browser-samsunginternet_android bc-supports-yes " aria-expanded="false" title="Released 2018-07-18"><span class="bc-browser-name">Samsung Internet</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>8.0<div class="bc-icons"></div></td><td class="bc-browser-nodejs bc-supports-yes " aria-expanded="false" title="Released 2016-04-26"><span class="bc-browser-name">Node.js</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>6.0.0<div class="bc-icons"></div></td></tr></tbody></table>
+
+<br />
+### defineProperty兼容性如下
+<table class="bc-table bc-table-web"><thead><tr class="bc-platforms"><td></td><th class="bc-platform-desktop" colspan="6"><span>desktop</span></th><th class="bc-platform-mobile" colspan="6"><span>mobile</span></th><th class="bc-platform-server" colspan="1"><span>server</span></th></tr><tr class="bc-browsers"><td></td><th class="bc-browser-chrome"><span class="bc-head-txt-label bc-head-icon-chrome">Chrome</span></th><th class="bc-browser-edge"><span class="bc-head-txt-label bc-head-icon-edge">Edge</span></th><th class="bc-browser-firefox"><span class="bc-head-txt-label bc-head-icon-firefox">Firefox</span></th><th class="bc-browser-ie"><span class="bc-head-txt-label bc-head-icon-ie">Internet Explorer</span></th><th class="bc-browser-opera"><span class="bc-head-txt-label bc-head-icon-opera">Opera</span></th><th class="bc-browser-safari"><span class="bc-head-txt-label bc-head-icon-safari">Safari</span></th><th class="bc-browser-webview_android"><span class="bc-head-txt-label bc-head-icon-webview_android">WebView Android</span></th><th class="bc-browser-chrome_android"><span class="bc-head-txt-label bc-head-icon-chrome_android">Chrome Android</span></th><th class="bc-browser-firefox_android"><span class="bc-head-txt-label bc-head-icon-firefox_android">Firefox for Android</span></th><th class="bc-browser-opera_android"><span class="bc-head-txt-label bc-head-icon-opera_android">Opera Android</span></th><th class="bc-browser-safari_ios"><span class="bc-head-txt-label bc-head-icon-safari_ios">Safari on iOS</span></th><th class="bc-browser-samsunginternet_android"><span class="bc-head-txt-label bc-head-icon-samsunginternet_android">Samsung Internet</span></th><th class="bc-browser-nodejs"><span class="bc-head-txt-label bc-head-icon-nodejs">Node.js</span></th></tr></thead><tbody><tr><th scope="row"><div class="bc-table-row-header"><code>defineProperty</code></div></th><td class="bc-browser-chrome bc-supports-yes " aria-expanded="false" title="Released 2010-05-25"><span class="bc-browser-name">Chrome</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>5<div class="bc-icons"></div></td><td class="bc-browser-edge bc-supports-yes " aria-expanded="false" title="Released 2015-07-28"><span class="bc-browser-name">Edge</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>12<div class="bc-icons"></div></td><td class="bc-browser-firefox bc-supports-yes " aria-expanded="false" title="Released 2011-03-22"><span class="bc-browser-name">Firefox</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>4<div class="bc-icons"></div></td><td class="bc-browser-ie bc-supports-yes bc-has-history" aria-expanded="false" tabindex="0" title="Released 2011-03-14"><span class="bc-browser-name">Internet Explorer</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>9<div class="bc-icons"></div><button type="button" title="Open implementation notes" class="bc-history-link only-icon "><span>Open</span><i class="ic-history" aria-hidden="true"></i></button></td><td class="bc-browser-opera bc-supports-yes " aria-expanded="false" title="Released 2011-12-06"><span class="bc-browser-name">Opera</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>11.6<div class="bc-icons"></div></td><td class="bc-browser-safari bc-supports-yes bc-has-history" aria-expanded="false" tabindex="0" title="Released 2011-07-20"><span class="bc-browser-name">Safari</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>5.1<div class="bc-icons"><abbr class="only-icon" title="footnote"><span>footnote</span><i class="ic-footnote"></i></abbr></div><button type="button" title="Open implementation notes" class="bc-history-link only-icon "><span>Open</span><i class="ic-history" aria-hidden="true"></i></button></td><td class="bc-browser-webview_android bc-supports-yes " aria-expanded="false" title="Released 2008-09-23"><span class="bc-browser-name">WebView Android</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>1<div class="bc-icons"></div></td><td class="bc-browser-chrome_android bc-supports-yes " aria-expanded="false" title="Released 2012-06-27"><span class="bc-browser-name">Chrome Android</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>18<div class="bc-icons"></div></td><td class="bc-browser-firefox_android bc-supports-yes " aria-expanded="false" title="Released 2011-03-29"><span class="bc-browser-name">Firefox for Android</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>4<div class="bc-icons"></div></td><td class="bc-browser-opera_android bc-supports-yes " aria-expanded="false" title="Released 2012-02-25"><span class="bc-browser-name">Opera Android</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>12<div class="bc-icons"></div></td><td class="bc-browser-safari_ios bc-supports-yes bc-has-history" aria-expanded="false" tabindex="0" title="Released 2012-09-10"><span class="bc-browser-name">Safari on iOS</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>6<div class="bc-icons"><abbr class="only-icon" title="footnote"><span>footnote</span><i class="ic-footnote"></i></abbr></div><button type="button" title="Open implementation notes" class="bc-history-link only-icon "><span>Open</span><i class="ic-history" aria-hidden="true"></i></button></td><td class="bc-browser-samsunginternet_android bc-supports-yes " aria-expanded="false" title="Released 2013-04-27"><span class="bc-browser-name">Samsung Internet</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>1.0<div class="bc-icons"></div></td><td class="bc-browser-nodejs bc-supports-yes " aria-expanded="false" title="Released 2013-03-11"><span class="bc-browser-name">Node.js</span><abbr class="bc-level-yes only-icon" title="Full support"><span>Full support</span></abbr>0.10.0<div class="bc-icons"></div></td></tr></tbody></table>
+
+<br />
+
+<h1 id="使用总结"><a href="#使用总结" class="headerlink" title="使用总结"></a>使用总结</h1><ul>
+<li>Object.defineProperty 并非不能监控数组下标的变化(vue2中不能通过下标的方式更新数组)</li>
+<li>Object.defineProperty 对属性的劫持需要深度遍历,新增属性需要手动Observe</li>
+<li>Proxy 可以使用业务场景和支持的API更多和全面</li>
+<li>Proxy 作为新标准,后续会有持续的性能优化</li>
+<li><span style="color: #ffbdbd">Proxy 兼容性是硬伤,在对兼容性有要求的业务场景下无法使用</span></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Vue/" rel="tag"># Vue</a>
+              <a href="/tags/Proxy/" rel="tag"># Proxy</a>
+              <a href="/tags/defineProperty/" rel="tag"># defineProperty</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/04/25/github%E5%B0%86%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB%E5%88%B0%E5%AD%90%E8%B7%AF%E5%BE%84%E4%B8%8B/" rel="prev" title="github将博客迁移到子路径下">
+                  <i class="fa fa-chevron-left"></i> github将博客迁移到子路径下
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/07/09/react%20props.children%20%E6%8E%A2%E7%B4%A2/" rel="next" title="react props.children 探索">
+                  react props.children 探索 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">随缘补刀</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
