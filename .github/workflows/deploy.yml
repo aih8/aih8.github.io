@@ -53,7 +53,7 @@ jobs:
         ssh-keyscan github.com >> ~/.ssh/known_hosts
         # set git infomation
         git config --global user.name 'hexo deployer'
-        git config --global user.email '907138916@qq.com'
+        git config --global user.email 'hoo32@qq.com'
         # install package
         npm i yarn -g
         yarn install --no-optional
